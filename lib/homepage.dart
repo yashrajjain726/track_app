@@ -1,7 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:track_app/main.dart';
-import 'package:track_app/screens/screen-one.dart';
 import 'package:workmanager/workmanager.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,6 +13,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final textcontroller = TextEditingController();
+  final databaseRef = FirebaseDatabase.instance.reference();
+  final Future<FirebaseApp> _future = Firebase.initializeApp();
+
+  void addData(String latitude, String longitude) {
+    databaseRef.push().set({'latitude': latitude, 'longitude': longitude});
+  }
+
   Position? location;
 
   Future<void> _getUserLocation() async {
@@ -38,6 +47,8 @@ class _HomePageState extends State<HomePage> {
         desiredAccuracy: LocationAccuracy.high);
 
     setState(() {
+      addData(userCurrentLocation.latitude.toString(),
+          userCurrentLocation.longitude.toString());
       location = userCurrentLocation;
     });
   }
@@ -70,39 +81,48 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
         ),
       ),
-      body: Container(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  await _getUserLocation();
-                },
-                child: const Text(
-                  "Fetch Location",
+      body: FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          } else {
+            return Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        await _getUserLocation();
+                      },
+                      child: const Text(
+                        "Fetch Location",
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/first');
+                      },
+                      child: const Text(
+                        "Change Screens",
+                      ),
+                    ),
+                    (location != null)
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Latitude is: ${location!.latitude} "),
+                              Text("Longitude is: ${location!.longitude} ")
+                            ],
+                          )
+                        : const SizedBox()
+                  ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/first');
-                },
-                child: const Text(
-                  "Change Screens",
-                ),
-              ),
-              (location != null)
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Latitude is: ${location!.latitude} "),
-                        Text("Longitude is: ${location!.longitude} ")
-                      ],
-                    )
-                  : const SizedBox()
-            ],
-          ),
-        ),
+            );
+          }
+        },
       ),
     );
   }
