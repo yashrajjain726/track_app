@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:track_app/homepage.dart';
-import 'package:track_app/screens/screen-one.dart';
-import 'package:track_app/screens/screen-two.dart';
+import 'package:track_app/screens/screen_five.dart';
+import 'package:track_app/screens/screen_four.dart';
+import 'package:track_app/screens/screen_one.dart';
+import 'package:track_app/screens/screen_three.dart';
+import 'package:track_app/screens/screen_two.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:track_app/notification.dart' as notify;
@@ -39,6 +42,9 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomePage(),
         '/first': (context) => ScreenOne(),
         '/second': (context) => ScreenTwo(),
+        '/three': (context) => ScreenThree(),
+        '/four': (context) => ScreenFour(),
+        '/five': (context) => ScreenFive(),
       },
     );
   }

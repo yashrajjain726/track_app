@@ -92,6 +92,16 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    (location != null)
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Latitude is: ${location!.latitude} "),
+                              Text("Longitude is: ${location!.longitude} ")
+                            ],
+                          )
+                        : const SizedBox()
+,
                     ElevatedButton(
                       onPressed: () async {
                         await _getUserLocation();
@@ -108,15 +118,31 @@ class _HomePageState extends State<HomePage> {
                         "Change Screens",
                       ),
                     ),
-                    (location != null)
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Latitude is: ${location!.latitude} "),
-                              Text("Longitude is: ${location!.longitude} ")
-                            ],
-                          )
-                        : const SizedBox()
+                    ElevatedButton(
+                      onPressed: () {
+                        
+                      },
+                      child: const Text(
+                        "Notification One",
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        
+                      },
+                      child: const Text(
+                        "Notification Two",
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        
+                      },
+                      child: const Text(
+                        "Notification Three",
+                      ),
+                    ),
+                    
                   ],
                 ),
               ),

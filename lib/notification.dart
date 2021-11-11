@@ -7,7 +7,8 @@ class Notification {
   Future showNotification(Position position) async {
     var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
         '1', 'location-bg',
-        playSound: true, importance: Importance.max, priority: Priority.high);
+        playSound: true,
+         importance: Importance.max, priority: Priority.high);
     var iOSPlatformChannelSpecifics =
         const IOSNotificationDetails(presentSound: true);
     var platformChannelSpecifics = NotificationDetails(
@@ -21,6 +22,8 @@ class Notification {
       payload: '',
     );
   }
+
+  
 
   // ignore: non_constant_identifier_names
   NotificationBanner() async {
