@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:track_app/homepage.dart';
+import 'package:track_app/notification.dart';
 import 'package:track_app/screens/screen_five.dart';
 import 'package:track_app/screens/screen_four.dart';
 import 'package:track_app/screens/screen_one.dart';
@@ -8,7 +10,6 @@ import 'package:track_app/screens/screen_three.dart';
 import 'package:track_app/screens/screen_two.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:track_app/notification.dart' as notify;
 
 const fetchBackground = "fetchBackground";
 
@@ -19,8 +20,8 @@ void callbackDispatcher() {
       case fetchBackground:
         Position userLocation = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
-        notify.Notification notification = new notify.Notification();
-        notification.showNotification(userLocation);
+        NotificationCall notification = new NotificationCall();
+        notification.scheduledNotification(userLocation);
         break;
     }
     return Future.value(true);
@@ -34,18 +35,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Track User Location',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomePage(),
-        '/first': (context) => ScreenOne(),
-        '/second': (context) => ScreenTwo(),
-        '/three': (context) => ScreenThree(),
-        '/four': (context) => ScreenFour(),
-        '/five': (context) => ScreenFive(),
-      },
+    return MultiProvider(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Track User Location',
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const HomePage(),
+          '/first': (context) => ScreenOne(),
+          '/second': (context) => ScreenTwo(),
+          '/three': (context) => ScreenThree(),
+          '/four': (context) => ScreenFour(),
+          '/five': (context) => ScreenFive(),
+        },
+      ),
+      providers: [ChangeNotifierProvider(create: (_) => NotificationCall())],
     );
   }
 }

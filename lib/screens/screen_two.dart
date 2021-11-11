@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class ScreenTwo extends StatelessWidget {
   const ScreenTwo({Key? key}) : super(key: key);
 
@@ -24,7 +23,7 @@ class ScreenTwo extends StatelessWidget {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/third');
+                  Navigator.pushNamed(context, '/three');
                 },
                 child: Text("Tap to Go to -> Third Screen")),
           ],

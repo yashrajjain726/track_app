@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:track_app/main.dart';
+import 'package:track_app/notification.dart';
 import 'package:workmanager/workmanager.dart';
 
 class HomePage extends StatefulWidget {
@@ -56,7 +58,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+    Provider.of<NotificationCall>(context, listen: false).initialize();
+    Workmanager().initialize(callbackDispatcher);
     Workmanager().registerPeriodicTask(
       "1",
       fetchBackground,
@@ -69,87 +72,70 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        centerTitle: true,
-        title: const Text(
-          "Track Me",
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          centerTitle: true,
+          title: const Text(
+            "Track Me",
+          ),
+          titleTextStyle: const TextStyle(
+            fontSize: 22,
+            fontStyle: FontStyle.normal,
+            color: Colors.white,
+          ),
         ),
-        titleTextStyle: const TextStyle(
-          fontSize: 22,
-          fontStyle: FontStyle.normal,
-          color: Colors.white,
-        ),
-      ),
-      body: FutureBuilder(
-        future: _future,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          } else {
-            return Container(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    (location != null)
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Latitude is: ${location!.latitude} "),
-                              Text("Longitude is: ${location!.longitude} ")
-                            ],
-                          )
-                        : const SizedBox()
-,
-                    ElevatedButton(
-                      onPressed: () async {
-                        await _getUserLocation();
-                      },
-                      child: const Text(
-                        "Fetch Location",
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/first');
-                      },
-                      child: const Text(
-                        "Change Screens",
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        
-                      },
-                      child: const Text(
-                        "Notification One",
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        
-                      },
-                      child: const Text(
-                        "Notification Two",
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        
-                      },
-                      child: const Text(
-                        "Notification Three",
-                      ),
-                    ),
-                    
-                  ],
+        body: Container(
+          child: Center(
+              child: Consumer<NotificationCall>(
+            builder: (context, model, _) => Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                (location != null)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Latitude is: ${location!.latitude} "),
+                          Text("Longitude is: ${location!.longitude} ")
+                        ],
+                      )
+                    : const SizedBox(),
+                ElevatedButton(
+                  onPressed: () async {
+                    await _getUserLocation();
+                  },
+                  child: const Text(
+                    "Fetch Location",
+                  ),
                 ),
-              ),
-            );
-          }
-        },
-      ),
-    );
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/first');
+                  },
+                  child: const Text(
+                    "Change Screens",
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => model.notificationOne(),
+                  child: const Text(
+                    "Notification One",
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => model.notificationTwo(),
+                  child: const Text(
+                    "Notification Two",
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => model.notificationThree(),
+                  child: const Text(
+                    "Notification Three",
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ));
   }
 }
